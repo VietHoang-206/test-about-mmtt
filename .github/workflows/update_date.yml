@@ -40,7 +40,7 @@ jobs:
         id: git-check
         run: |
           git status
-          git add --all ':!drive-api-project-452000-0954b095d85b.json'
+          git add .
           if git diff --cached --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
