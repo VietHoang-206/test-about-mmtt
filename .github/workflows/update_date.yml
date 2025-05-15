@@ -32,14 +32,16 @@ jobs:
           SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_JSON }}
         run: |
           echo "$SERVICE_ACCOUNT_JSON" > drive-api-project-452000-10d4b5dc6bcc.json
-
+          
       - name: Run update script
         run: python update_script.py
-
+        
       - name: Check if there are any changes
         id: git-check
         run: |
-          if git diff --quiet; then
+          git status
+          git add --all ':!drive-api-project-452000-0954b095d85b.json'
+          if git diff --cached --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -53,5 +55,12 @@ jobs:
         if: steps.git-check.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
-          co206
+          commit-message: "Update last modified dates in Markdown from Google Drive"
+          title: "PR: Update Markdown with latest Google Drive dates"
+          body: |
+            A pull request automatically created by GitHub Actions to update the last modified date from Google Drive into the Markdown file.
+          branch: ${{ steps.time.outputs.ts }}
+          base: VietHoang-206-patch-3
+          delete-branch: true
+          reviewers: VietHoang-206
           assignees: VietHoang-206
